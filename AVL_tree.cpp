@@ -261,7 +261,7 @@ int main()
     cout << "\nlevelOrder: ";
     T.levelOrder();
 
-    T.remove(7); // deleting 40
+    T.remove(40); // deleting 40
 
     // ------AVL   TREE------
     //           21

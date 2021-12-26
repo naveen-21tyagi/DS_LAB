@@ -48,7 +48,7 @@ public:
     {
         if (head->data == val)
         {
-            head = NULL;
+            head = head->next;
             size--;
         }
         else
@@ -143,7 +143,9 @@ int main()
     displayT();
 
     del(15);
-    del(99);
+    del(12);
+    del(111);
+
     displayT();
 
     search(111);
