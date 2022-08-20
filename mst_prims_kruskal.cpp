@@ -140,6 +140,14 @@ public:
     vector<pair<pair<int, int>, int>> pMST; // For prim MST and cost
     vector<pair<pair<int, int>, int>> kMST; // For kruskal MST and cost
 
+    int find(int * parent, int i){
+        if(parent[i]==-1)
+            return i;
+        return find(parent,parent[i]);
+    }
+    void unio(int * parent,int x, int y){
+        parent[x]=y;
+    }
     Graph()
     {
         initialise();
@@ -223,46 +231,41 @@ public:
         return true;
     }
 
-    // bool krusMST()
-    // {
-    //     fill_n(visited, MAX, 0);
+    bool krusMST()
+    {
+        int parent[1000];
+        fill_n(parent,nodes,-1);
+        vector<pair<pair<int, int>, int>> edges;
+        for (int i = 0; i < nodes; i++)
+        {
+            for (int j = 0; j < nodes; j++)
+            {
+                if (adj_mat[i][j])
+                {
+                    edges.emplace_back(make_pair(i + 1, j + 1), adj_mat[i][j]);
+                }
+            }
+        }
+        sort(edges.begin(), edges.end(), comp());
+        int n_edges = 0, i = 0;
+        while (n_edges < nodes - 1 && i < edges.size())
+        {
+            int x = edges[i].first.first;
+            int y = edges[i].first.second;
+            // int cost = edges[].second;
+            i++;
+            if(find(parent,x-1)!=find(parent,y-1)){
+                unio(parent,x-1,y-1);
+                kMST.emplace_back(edges[i - 1]);
+                n_edges++;
+            }
 
-    //     vector<pair<pair<int, int>, int>> edges;
-    //     for (int i = 0; i < nodes; i++)
-    //     {
-    //         for (int j = 0; j < nodes; j++)
-    //         {
-    //             if (adj_mat[i][j])
-    //             {
-    //                 edges.emplace_back(make_pair(i + 1, j + 1), adj_mat[i][j]);
-    //             }
-    //         }
-    //     }
-    //     sort(edges.begin(), edges.end(), comp());
-    //     int n_edges = 0, i = 0;
-    //     while (n_edges < nodes - 1 && i < edges.size())
-    //     {
-    //         int x = edges[i].first.first;
-    //         int y = edges[i].first.second;
-    //         // int cost = edges[].second;
-    //         i++;
-    //         if (visited[x - 1] && visited[y - 1])
-    //         {
-    //             if(dfs(x,y))
-    //             continue;
-    //         }
+        }
+        if (kMST.size() != nodes - 1)
+            return false;
 
-    //         kMST.emplace_back(edges[i - 1]);
-    //         visited[x-1]=visited[y-1]=1;
-    //         n_edges++;
-
-    //     }
-    //     cout<<kMST.size();
-    //     if (kMST.size() != nodes - 1)
-    //         return false;
-
-    //     return true;
-    // }
+        return true;
+    }
 };
 
 //------------------------------------------------
@@ -277,9 +280,11 @@ int main()
     G.edge(2, 5, 15);
     G.edge(3, 6, 16);
     G.edge(5, 6, 20);
+
     G.edge(4, 7, 21);
     G.edge(6, 7, 20);
     G.edge(5, 8, 32);
+
     G.edge(6, 9, 7);
     G.edge(8, 9, 9);
 
@@ -295,15 +300,15 @@ int main()
     else
         cout << "No prim Spanning Tree.\n";
 
-    // if (G.krusMST())
-    // {
-    //     cout << "\nUsing Kruskal algorithm\n";
-    //     cout << "\nEDGES\t\tCOST\n";
-    //     for (int i = 0; i < G.kMST.size(); i++)
-    //     {
-    //         cout << G.kMST[i].first.first << " - " << G.kMST[i].first.second << "\t\t" << G.kMST[i].second << endl;
-    //     }
-    // }
-    // else
-    //     cout << "\nNo kruskal Spanning Tree.\n";
+    if (G.krusMST())
+    {
+        cout << "\nUsing Kruskal algorithm\n";
+        cout << "\nEDGES\t\tCOST\n";
+        for (int i = 0; i < G.kMST.size(); i++)
+        {
+            cout << G.kMST[i].first.first << " - " << G.kMST[i].first.second << "\t\t" << G.kMST[i].second << endl;
+        }
+    }
+    else
+        cout << "\nNo kruskal Spanning Tree.\n";
 }
